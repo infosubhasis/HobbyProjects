@@ -28,9 +28,11 @@ void CImageEnhancer::EqualizeHistogram(Mat & img, Mat & out, bool fUseAdaptive)
 	{
 		if (fUseAdaptive)
 		{
+			int iKernelSize = 8;
+			double dClipLimit = 2.0;
 			cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE();
-			clahe->setClipLimit(2);
-			clahe->setTilesGridSize(cv::Size(8, 8));
+			clahe->setClipLimit(dClipLimit);
+			clahe->setTilesGridSize(cv::Size(iKernelSize, iKernelSize));
 			cv::Mat dst;
 			clahe->apply(img, out);
 		}
@@ -56,14 +58,14 @@ bool CImageEnhancer::EqualizeHistogram(cv::Mat inputImage, cv::Mat & outputImage
 
 		case eEqualizationType::HSVSPACE:
 			{
-				Mat ycrcb;
-				cvtColor(inputImage, ycrcb, CV_BGR2HSV);
-				split(ycrcb, channels);
+				Mat hsv;
+				cvtColor(inputImage, hsv, CV_BGR2HSV);
+				split(hsv, channels);
 				EqualizeHistogram(channels[2], channels[2],fuseAdptive);
 				if (fUseGamma)
 					correctGamma(channels[2], channels[2], dGamma);
-				merge(channels, ycrcb);
-				cvtColor(ycrcb, result, CV_HSV2BGR);
+				merge(channels, hsv);
+				cvtColor(hsv, result, CV_HSV2BGR);
 			}
 			break;
 		case eEqualizationType::YCRCBSPACE:
@@ -80,14 +82,14 @@ bool CImageEnhancer::EqualizeHistogram(cv::Mat inputImage, cv::Mat & outputImage
 			break;
 		case eEqualizationType::LABSPACE:
 			{
-				Mat ycrcb;
-				cvtColor(inputImage, ycrcb, CV_BGR2Lab);
-				split(ycrcb, channels);
+				Mat lab;
+				cvtColor(inputImage, lab, CV_BGR2Lab);
+				split(lab, channels);
 				EqualizeHistogram(channels[0], channels[0], fuseAdptive);
 				if (fUseGamma)
 					correctGamma(channels[0], channels[0], dGamma);
-				merge(channels, ycrcb);
-				cvtColor(ycrcb, result, CV_Lab2BGR);
+				merge(channels, lab);
+				cvtColor(lab, result, CV_Lab2BGR);
 			}
 			break;		
 		default:
@@ -159,9 +161,9 @@ void CImageEnhancer::GetColorHistogram(cv::Mat inputImage, cv::Mat & histogramIm
 			Point(bin_w*(i), hist_h - cvRound(r_hist.at<float>(i))),
 			Scalar(0, 0, 255), 2, 8, 0);
 
-		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(value_hist.at<float>(i - 1))),
+		/*line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(value_hist.at<float>(i - 1))),
 			Point(bin_w*(i), hist_h - cvRound(value_hist.at<float>(i))),
-			Scalar(255, 255, 255), 2, 8, 0);
+			Scalar(255, 255, 255), 2, 8, 0);*/
 	}
 
 	histImage.copyTo(histogramImage);

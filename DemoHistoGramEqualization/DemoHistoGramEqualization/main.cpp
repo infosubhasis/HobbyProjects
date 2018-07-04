@@ -7,12 +7,76 @@
 #include <conio.h>
 
 using namespace std;
+cv::Mat input;
+const int slider_max = 100;
+int slider_value;
 
 
-
-void EnhanceImage(cv::Mat& inputImage)
+void on_trackbar(int, void*)
 {
-	
+	cv::Mat ycrcb, brightImg;
+	vector<Mat> channels;
+
+	cvtColor(input, ycrcb, CV_BGR2YCrCb);
+	split(ycrcb, channels);
+
+	channels[0] = channels[0] + slider_value;
+	merge(channels, ycrcb);
+	cvtColor(ycrcb, brightImg, CV_YCrCb2BGR);
+
+	imshow("Brightness added", brightImg);
+}
+
+void TestImage(CImageEnhancer & imageEnhancer)
+{
+	cv::Mat img = cv::imread("demo.png");
+
+	if (!img.empty())
+	{
+		img.copyTo(input);
+
+		cv::imshow("input", img);		
+		
+		cv::Mat enhancedImg, enhancedImgAdaptive;
+
+		imageEnhancer.EqualizeHistogram(img, enhancedImgAdaptive, eEqualizationType::HSVSPACE, true, false, 1.0);
+		imageEnhancer.EqualizeHistogram(img, enhancedImg, eEqualizationType::HSVSPACE, false, true, 0.7);
+
+
+
+		/// Create Windows
+		namedWindow("Brightness added", 1);
+
+		/// Create Trackbars
+		char TrackbarName[50] = "Brightness";
+		
+		slider_value = 0;
+		createTrackbar(TrackbarName, "Brightness added", &slider_value, slider_max, on_trackbar);
+
+		/// Show some stuff
+		on_trackbar(slider_value, 0);
+		cv::waitKey(0);
+
+		if (!enhancedImg.empty())
+			cv::imshow("Enhanced", enhancedImg);
+
+		if (!enhancedImgAdaptive.empty())
+			cv::imshow("EnhancedAdaptive", enhancedImgAdaptive);
+		cv::Mat histImageOriginal, histImageEnhanced;
+		
+		imageEnhancer.GetColorHistogram(img, histImageOriginal);
+		imageEnhancer.GetColorHistogram(enhancedImg, histImageEnhanced);
+		if (!histImageOriginal.empty())
+			cv::imshow("Original Image : Histogram", histImageOriginal);
+
+		if (!histImageEnhanced.empty())
+			cv::imshow("Enahnced Image : Histogram", histImageEnhanced);
+		cv::imwrite("out.png", enhancedImg);
+		cv::waitKey(0);
+		cv::destroyWindow("input");
+		cv::destroyWindow("Enhanced");
+		cv::destroyWindow("Brightness added");
+	}
 
 }
 
@@ -53,7 +117,7 @@ void TestLive(CImageEnhancer & imageEnhancer)
 
 		cv::Mat histImageOriginal, histImageEnhanced, histImageEnhancedAdapted;		
 		
-		eEqualizationType eqtype = eEqualizationType::HSVSPACE;
+		eEqualizationType eqtype = eEqualizationType::LABSPACE;
 		std::string colorspaceName = "";
 		
 		switch (iOption)
@@ -154,6 +218,7 @@ int main(int argc, char* argv[])
 {
 
 	CImageEnhancer imageEnhancer;
+	TestImage(imageEnhancer);
 
 	TestLive(imageEnhancer);
 
