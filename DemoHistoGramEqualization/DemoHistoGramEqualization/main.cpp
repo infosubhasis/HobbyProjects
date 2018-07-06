@@ -39,7 +39,7 @@ void TestImage(CImageEnhancer & imageEnhancer)
 		
 		cv::Mat enhancedImg, enhancedImgAdaptive;
 
-		imageEnhancer.EqualizeHistogram(img, enhancedImgAdaptive, eEqualizationType::HSVSPACE, true, false, 1.0);
+		//imageEnhancer.EqualizeHistogram(img, enhancedImgAdaptive, eEqualizationType::HSVSPACE, true, false, 1.0);
 		imageEnhancer.EqualizeHistogram(img, enhancedImg, eEqualizationType::HSVSPACE, false, true, 0.7);
 
 
@@ -71,7 +71,7 @@ void TestImage(CImageEnhancer & imageEnhancer)
 
 		if (!histImageEnhanced.empty())
 			cv::imshow("Enahnced Image : Histogram", histImageEnhanced);
-		cv::imwrite("out.png", enhancedImg);
+		//cv::imwrite("out.png", enhancedImg);
 		cv::waitKey(0);
 		cv::destroyWindow("input");
 		cv::destroyWindow("Enhanced");

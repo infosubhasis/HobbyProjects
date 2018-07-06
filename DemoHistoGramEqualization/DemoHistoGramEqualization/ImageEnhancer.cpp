@@ -151,19 +151,19 @@ void CImageEnhancer::GetColorHistogram(cv::Mat inputImage, cv::Mat & histogramIm
 	/// Draw for each channel
 	for (int i = 1; i < histSize; i++)
 	{
-		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(b_hist.at<float>(i - 1))),
+		/*line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(b_hist.at<float>(i - 1))),                      //Blue Channel
 			Point(bin_w*(i), hist_h - cvRound(b_hist.at<float>(i))),
 			Scalar(255, 0, 0), 2, 8, 0);
-		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(g_hist.at<float>(i - 1))),
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(g_hist.at<float>(i - 1))),						//Green Channel
 			Point(bin_w*(i), hist_h - cvRound(g_hist.at<float>(i))),
 			Scalar(0, 255, 0), 2, 8, 0);
-		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(r_hist.at<float>(i - 1))),
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(r_hist.at<float>(i - 1))),						//Red Channel
 			Point(bin_w*(i), hist_h - cvRound(r_hist.at<float>(i))),
-			Scalar(0, 0, 255), 2, 8, 0);
+			Scalar(0, 0, 255), 2, 8, 0);*/
 
-		/*line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(value_hist.at<float>(i - 1))),
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(value_hist.at<float>(i - 1))),					//Intensity Channel from Grayscale converted image
 			Point(bin_w*(i), hist_h - cvRound(value_hist.at<float>(i))),
-			Scalar(255, 255, 255), 2, 8, 0);*/
+			Scalar(255, 255, 255), 2, 8, 0);
 	}
 
 	histImage.copyTo(histogramImage);
